@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd">
+           
+       	<context:component-scan base-package="com.springApp.controllers"/>
+       	<mvc:annotation-driven/>
+       	
+       	<bean id="Users" class="com.company.springBootApp.objects.Users">
+       		<property name="id" value="0"></property>
+       		<property name="status" value="1"></property>
+       		<property name="lastDatelogin" value="0"></property>
+       	</bean>
+       	<bean name="usersDao" class="com.springApp.daos.UsersDao"></bean>
+       	
+      	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        	<property name="suffix" value=".jsp"></property>
+		</bean>
+       
+       	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+       		<property name="driverClass" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"></property>
+       		<property name="jdbcUrl" value="jdbc:sqlserver://localhost:1433;databaseName=Testing"></property>
+       		<property name="user" value="BrayanDB"></property>
+       		<property name="password" value="brayandb"></property>
+       		<property name="minPoolSize" value="5"></property>
+       		<property name="maxPoolSize" value="10"></property>
+       		<property name="maxIdleTime" value="30000"></property>
+       	</bean>
+       
+       	<bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+       		<property name="dataSource" ref="dataSource"></property>
+       		<property name="packagesToScan" value="com.springApp.objects.dataBase"></property>
+       		<property name="hibernateProperties">
+       			<props>
+       				<prop key="hibernate.dialect">org.hibernate.dialect.SQLServerDialect</prop>
+       				<prop key="hibernate.show_sql">true</prop>
+       			</props>
+       		</property>
+       	</bean>
+       
+       	<bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+       		<property name="sessionFactory" ref="sessionFactory"></property>
+      	</bean>
+      	
+      	<tx:annotation-driven transaction-manager="transactionManager"/>
+       
+</beans>   
